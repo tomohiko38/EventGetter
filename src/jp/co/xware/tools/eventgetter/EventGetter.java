@@ -78,8 +78,12 @@ public class EventGetter {
     	}
     	
     	// Doorkeeper の情報を取得する
-        String ret = this.communication(this.editDoorkeeperUrl(year, tmpMonth, keyword));
-        System.out.println(ret);
+        String retDoorKeeper = this.communication(this.editDoorkeeperUrl(year, tmpMonth, keyword));
+        System.out.println(retDoorKeeper);
+        
+        // connpass の情報を取得する
+        String retConnpass = this.communication(this.editConnpass(year, tmpMonth, keyword));
+        System.out.println(retConnpass);
     }
 
     /**
@@ -98,6 +102,14 @@ public class EventGetter {
     	return String.valueOf(cal.getActualMaximum(Calendar.DATE));
     }
     
+    /**
+     * DoorKeeper 用の URL を作成する.
+     * 
+     * @param year 年
+     * @param month 月
+     * @param keyword キーワード
+     * @return URL
+     */
     private String editDoorkeeperUrl(final String year,
     		                         final String month,
     		                         final String keyword) {
@@ -123,6 +135,26 @@ public class EventGetter {
     	return doorkeeperUrl;
     }
     
+    /**
+     * connpass 用の URL を編集する.
+     * 
+     * @param year 年
+     * @param month 月
+     * @param keyword キーワード
+     * @return URL
+     */
+    private String editConnpass(final String year,
+    		                    final String month,
+    		                    final String keyword) {
+    	
+    	// 月の最終日を求める
+    	String lastDayOfMonth = this.getLastDayOfMonth(Integer.parseInt(year), 
+    			                                       Integer.parseInt(month));
+    	
+    	// URL を編集する
+        String connpassUrl = "https://connpass.com/api/v1/event/?keyword=" + keyword + "&ym=" + year + month + "&count=100";
+    	return connpassUrl;
+    }
     
     /**
      * 通信処理.
