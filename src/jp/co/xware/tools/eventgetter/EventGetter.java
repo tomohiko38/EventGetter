@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import net.arnx.jsonic.JSON;
 
 public class EventGetter {
 
@@ -46,16 +51,6 @@ public class EventGetter {
         String month = args[1];   // 月
         String keyword = args[2]; // キーワード
 
-        // 年が数字かどうかのチェック
-        int yyyy = 0;
-        try {
-            yyyy = Integer.parseInt(year);
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-            System.out.println("年は数字で指定してください。");
-            return;
-        }
-
         // 月が数字かどうかのチェック
         int mm = 0;
         try {
@@ -79,11 +74,44 @@ public class EventGetter {
 
         // Doorkeeper の情報を取得する
         String retDoorKeeper = this.communication(this.editDoorkeeperUrl(year, tmpMonth, keyword));
-        System.out.println(retDoorKeeper);
+        List<HashMap<String, LinkedHashMap<String, String>>> doorKeeperEventList = JSON.decode(retDoorKeeper);
+        
+        for (int i = 0; i < doorKeeperEventList.size(); i++) {
+        	
+        	HashMap<String, LinkedHashMap<String, String>> eventInfo = doorKeeperEventList.get(i);
+        	LinkedHashMap<String, String> event = eventInfo.get("event");
+        	
+        	String title    = event.get("title");
+        	String startsAt = event.get("starts_at");
+        	String eventUrl = event.get("public_url");
+        	String address  = event.get("address");
+        	
+        	System.out.println("【DoorKeeper】------------------------------");
+        	System.out.println(title);
+        	System.out.println(startsAt);
+        	System.out.println(eventUrl);
+        	System.out.println(address);
+        }
 
         // connpass の情報を取得する
         String retConnpass = this.communication(this.editConnpass(year, tmpMonth, keyword));
-        System.out.println(retConnpass);
+        LinkedHashMap<String, List<LinkedHashMap<String, String>>> connpassEventList = JSON.decode(retConnpass);
+        List<LinkedHashMap<String, String>> events = connpassEventList.get("events");
+        for (int i = 0; i < events.size(); i++) {
+        	
+        	LinkedHashMap<String, String> event = events.get(i);
+        	
+        	String title     = event.get("title");
+        	String startedAt = event.get("started_at");
+        	String eventUrl  = event.get("event_url");
+        	String address   = event.get("address");
+
+        	System.out.println("【Connpass】------------------------------");
+        	System.out.println(title);
+        	System.out.println(startedAt);
+        	System.out.println(eventUrl);
+        	System.out.println(address);
+        }        
     }
 
     /**
