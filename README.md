@@ -6,6 +6,10 @@ EventGetter は DoorKeeper や Connpass で公開されている API を使用�
 * Eclipse(MARS.2)
 
 ## Release Note
+
+### 2017.06.17 Sat
+* Issue #2 対応(JSON 情報の解析)【11:30】
+
 ### 2017.06.16 Fri
 * Connpass の処理では月の最終日の取得は不要だったので削除。
 
